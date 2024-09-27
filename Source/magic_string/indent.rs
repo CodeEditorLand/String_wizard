@@ -106,6 +106,7 @@ impl<'text> MagicString<'text> {
 		let exclude_set = ExcludeSet::new(opts.exclude);
 
 		let mut next_chunk_id = Some(self.first_chunk_idx);
+
 		let mut char_index = 0;
 		while let Some(chunk_idx) = next_chunk_id {
 			// Make sure the `next_chunk_id` is updated before we split the chunk. Otherwise, we

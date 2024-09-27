@@ -7,6 +7,7 @@ pub struct Locator {
 impl Locator {
 	pub fn new(source: &str) -> Self {
 		let mut line_offsets = vec![];
+
 		let mut line_start_pos = 0;
 		for line in source.split('\n') {
 			line_offsets.push(line_start_pos);
@@ -20,6 +21,7 @@ impl Locator {
 		let index = index as usize;
 
 		let mut left_cursor = 0;
+
 		let mut right_cursor = self.line_offsets.len();
 		while left_cursor < right_cursor {
 			let mid = (left_cursor + right_cursor) >> 1;
@@ -30,6 +32,7 @@ impl Locator {
 			}
 		}
 		let line = left_cursor - 1;
+
 		let column = index - self.line_offsets[line];
 		Location { line: line.try_into().unwrap(), column: column.try_into().unwrap() }
 	}

@@ -42,6 +42,7 @@ impl SourcemapBuilder {
 		} else {
 			None
 		};
+
 		let mut loc = locator.locate(chunk.start());
 		if let Some(edited_content) = &chunk.edited_content {
 			if !edited_content.is_empty() {

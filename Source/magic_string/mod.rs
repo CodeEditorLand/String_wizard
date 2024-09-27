@@ -48,10 +48,15 @@ impl<'text> MagicString<'text> {
 
 	pub fn with_options(source: impl Into<CowStr<'text>>, options: MagicStringOptions) -> Self {
 		let source: CowStr = source.into();
+
 		let source_len = source.len();
+
 		let initial_chunk = Chunk::new(Span(0, source_len));
+
 		let mut chunks = IndexChunks::with_capacity(1);
+
 		let initial_chunk_idx = chunks.push(initial_chunk);
+
 		let mut magic_string = Self {
 			intro: Default::default(),
 			outro: Default::default(),
@@ -78,6 +83,7 @@ impl<'text> MagicString<'text> {
 
 	pub fn to_string(&self) -> String {
 		let size_hint = self.len();
+
 		let mut ret = String::with_capacity(size_hint);
 		self.fragments().for_each(|f| ret.push_str(f));
 		ret
@@ -107,7 +113,9 @@ impl<'text> MagicString<'text> {
 
 	pub(crate) fn fragments(&'text self) -> impl Iterator<Item = &'text str> {
 		let intro = self.intro.iter().map(|s| s.as_ref());
+
 		let outro = self.outro.iter().map(|s| s.as_ref());
+
 		let chunks = self.iter_chunks().flat_map(|c| c.fragments(&self.source));
 		intro.chain(chunks).chain(outro)
 	}
@@ -148,8 +156,11 @@ impl<'text> MagicString<'text> {
 		}
 
 		let second_half_chunk = self.chunks[candidate_idx].split(at_index);
+
 		let second_half_span = second_half_chunk.span;
+
 		let second_half_idx = self.chunks.push(second_half_chunk);
+
 		let first_half_idx = candidate_idx;
 
 		// Update the last searched chunk

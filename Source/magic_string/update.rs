@@ -51,6 +51,7 @@ impl<'text> MagicString<'text> {
 		self.split_at(end);
 
 		let start_idx = self.chunk_by_start.get(&start).copied().unwrap();
+
 		let end_idx = self.chunk_by_end.get(&end).copied().unwrap();
 
 		let start_chunk = &mut self.chunks[start_idx];

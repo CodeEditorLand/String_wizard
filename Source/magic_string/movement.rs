@@ -27,9 +27,11 @@ impl<'text> MagicString<'text> {
 		self.split_at(to);
 
 		let first_idx = self.chunk_by_start[&start];
+
 		let last_idx = self.chunk_by_end[&end];
 
 		let old_left_idx = self.chunks[first_idx].prev;
+
 		let old_right_idx = self.chunks[last_idx].next;
 
 		let new_right_idx = self.chunk_by_start.get(&to).copied();
