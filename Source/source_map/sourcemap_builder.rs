@@ -1,24 +1,23 @@
+use super::locator::Locator;
 use crate::chunk::Chunk;
 
-use super::locator::Locator;
-
 pub struct SourcemapBuilder {
-	hires: bool,
-	generated_code_line: usize,
+	hires:bool,
+	generated_code_line:usize,
 	/// `generated_code_column` is calculated based on utf-16.
-	generated_code_column: usize,
-	source_id: u32,
-	source_map_builder: oxc_sourcemap::SourceMapBuilder,
+	generated_code_column:usize,
+	source_id:u32,
+	source_map_builder:oxc_sourcemap::SourceMapBuilder,
 }
 
 impl SourcemapBuilder {
-	pub fn new(hires: bool) -> Self {
+	pub fn new(hires:bool) -> Self {
 		Self {
 			hires,
-			generated_code_line: 0,
-			generated_code_column: 0,
-			source_id: 0,
-			source_map_builder: oxc_sourcemap::SourceMapBuilder::default(),
+			generated_code_line:0,
+			generated_code_column:0,
+			source_id:0,
+			source_map_builder:oxc_sourcemap::SourceMapBuilder::default(),
 		}
 	}
 
@@ -26,16 +25,17 @@ impl SourcemapBuilder {
 		self.source_map_builder.into_sourcemap()
 	}
 
-	pub fn set_source_and_content(&mut self, id: &str, content: &str) {
-		self.source_id = self.source_map_builder.set_source_and_content(id, content);
+	pub fn set_source_and_content(&mut self, id:&str, content:&str) {
+		self.source_id =
+			self.source_map_builder.set_source_and_content(id, content);
 	}
 
 	pub fn add_chunk(
 		&mut self,
-		chunk: &Chunk,
-		locator: &Locator,
-		source: &str,
-		name: Option<&str>,
+		chunk:&Chunk,
+		locator:&Locator,
+		source:&str,
+		name:Option<&str>,
 	) {
 		let name_id = if chunk.keep_in_mappings {
 			name.map(|name| self.source_map_builder.add_name(name))
@@ -76,19 +76,19 @@ impl SourcemapBuilder {
 						loc.bump_line();
 						self.bump_line();
 						new_line = true;
-					}
+					},
 					_ => {
 						let char_utf16_len = char.len_utf16();
 						loc.column += char_utf16_len;
 						self.generated_code_column += char_utf16_len;
 						new_line = false;
-					}
+					},
 				}
 			}
 		}
 	}
 
-	pub fn advance(&mut self, content: &str) {
+	pub fn advance(&mut self, content:&str) {
 		if content.is_empty() {
 			return;
 		}
@@ -101,7 +101,8 @@ impl SourcemapBuilder {
 		for _ in lines {
 			self.bump_line();
 		}
-		self.generated_code_column += last_line.chars().map(|c| c.len_utf16()).sum::<usize>();
+		self.generated_code_column +=
+			last_line.chars().map(|c| c.len_utf16()).sum::<usize>();
 	}
 
 	fn bump_line(&mut self) {

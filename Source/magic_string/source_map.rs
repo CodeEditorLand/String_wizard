@@ -7,19 +7,22 @@ use crate::{
 
 #[derive(Debug)]
 pub struct SourceMapOptions {
-	pub include_content: bool,
-	pub source: Arc<str>,
-	pub hires: bool,
+	pub include_content:bool,
+	pub source:Arc<str>,
+	pub hires:bool,
 }
 
 impl Default for SourceMapOptions {
 	fn default() -> Self {
-		Self { include_content: false, source: "".into(), hires: false }
+		Self { include_content:false, source:"".into(), hires:false }
 	}
 }
 
 impl<'s> MagicString<'s> {
-	pub fn source_map(&self, opts: SourceMapOptions) -> oxc_sourcemap::SourceMap {
+	pub fn source_map(
+		&self,
+		opts:SourceMapOptions,
+	) -> oxc_sourcemap::SourceMap {
 		let mut source_builder = SourcemapBuilder::new(opts.hires);
 
 		source_builder.set_source_and_content(&opts.source, &self.source);

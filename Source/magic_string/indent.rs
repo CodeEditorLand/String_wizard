@@ -3,20 +3,18 @@ use std::borrow::Cow;
 use crate::{CowStr, MagicString};
 
 struct ExcludeSet<'a> {
-	exclude: &'a [(usize, usize)],
+	exclude:&'a [(usize, usize)],
 }
 
 impl<'a> ExcludeSet<'a> {
-	fn new(exclude: &'a [(usize, usize)]) -> Self {
-		Self { exclude }
-	}
+	fn new(exclude:&'a [(usize, usize)]) -> Self { Self { exclude } }
 
-	fn contains(&self, index: usize) -> bool {
+	fn contains(&self, index:usize) -> bool {
 		self.exclude.iter().any(|s| s.0 <= index && index < s.1)
 	}
 }
 
-pub fn guess_indentor(source: &str) -> Option<String> {
+pub fn guess_indentor(source:&str) -> Option<String> {
 	let mut tabbed_count = 0;
 	let mut spaced_line = vec![];
 	for line in source.lines() {
@@ -50,42 +48,49 @@ pub fn guess_indentor(source: &str) -> Option<String> {
 
 #[derive(Debug, Default)]
 pub struct IndentOptions<'a, 'b> {
-	/// MagicString will guess the `indentor` from lines of the source if passed `None`.
-	pub indentor: Option<&'a str>,
+	/// MagicString will guess the `indentor` from lines of the source if
+	/// passed `None`.
+	pub indentor:Option<&'a str>,
 
-	/// The reason I use `[u32; 2]` instead of `(u32, u32)` to represent a range of text is that
-	/// I want to emphasize that the `[u32; 2]` is the closed interval, which means both the start
-	/// and the end are included in the range.
-	pub exclude: &'b [(usize, usize)],
+	/// The reason I use `[u32; 2]` instead of `(u32, u32)` to represent a
+	/// range of text is that I want to emphasize that the `[u32; 2]` is the
+	/// closed interval, which means both the start and the end are included
+	/// in the range.
+	pub exclude:&'b [(usize, usize)],
 }
 
 impl<'text> MagicString<'text> {
 	fn guessed_indentor(&mut self) -> &str {
-		let guessed_indentor = self
-			.guessed_indentor
-			.get_or_init(|| guess_indentor(&self.source).unwrap_or_else(|| "\t".to_string()));
+		let guessed_indentor = self.guessed_indentor.get_or_init(|| {
+			guess_indentor(&self.source).unwrap_or_else(|| "\t".to_string())
+		});
 		guessed_indentor
 	}
 
 	pub fn indent(&mut self) -> &mut Self {
-		self.indent_with(IndentOptions { indentor: None, ..Default::default() })
+		self.indent_with(IndentOptions { indentor:None, ..Default::default() })
 	}
 
-	pub fn indent_with(&mut self, opts: IndentOptions) -> &mut Self {
+	pub fn indent_with(&mut self, opts:IndentOptions) -> &mut Self {
 		if opts.indentor.map_or(false, |s| s.is_empty()) {
 			return self;
 		}
 		struct IndentReplacer {
-			should_indent_next_char: bool,
-			indentor: String,
+			should_indent_next_char:bool,
+			indentor:String,
 		}
 
-		fn indent_frag<'text>(frag: &mut CowStr<'text>, indent_replacer: &mut IndentReplacer) {
+		fn indent_frag<'text>(
+			frag:&mut CowStr<'text>,
+			indent_replacer:&mut IndentReplacer,
+		) {
 			let mut indented = String::new();
 			for char in frag.chars() {
 				if char == '\n' {
 					indent_replacer.should_indent_next_char = true;
-				} else if char != '\r' && indent_replacer.should_indent_next_char {
+				} else if char != '\r'
+					&& indent_replacer.should_indent_next_char
+				{
 					indent_replacer.should_indent_next_char = false;
 					indented.push_str(&indent_replacer.indentor);
 				}
@@ -96,8 +101,10 @@ impl<'text> MagicString<'text> {
 
 		let indentor = opts.indentor.unwrap_or_else(|| self.guessed_indentor());
 
-		let mut indent_replacer =
-			IndentReplacer { should_indent_next_char: true, indentor: indentor.to_string() };
+		let mut indent_replacer = IndentReplacer {
+			should_indent_next_char:true,
+			indentor:indentor.to_string(),
+		};
 
 		for intro_frag in self.intro.iter_mut() {
 			indent_frag(intro_frag, &mut indent_replacer)
@@ -109,10 +116,12 @@ impl<'text> MagicString<'text> {
 
 		let mut char_index = 0;
 		while let Some(chunk_idx) = next_chunk_id {
-			// Make sure the `next_chunk_id` is updated before we split the chunk. Otherwise, we
-			// might process the same chunk twice.
+			// Make sure the `next_chunk_id` is updated before we split the
+			// chunk. Otherwise, we might process the same chunk twice.
 			next_chunk_id = self.chunks[chunk_idx].next;
-			if let Some(edited_content) = self.chunks[chunk_idx].edited_content.as_mut() {
+			if let Some(edited_content) =
+				self.chunks[chunk_idx].edited_content.as_mut()
+			{
 				if !exclude_set.contains(char_index) {
 					indent_frag(edited_content, &mut indent_replacer);
 				}
@@ -122,11 +131,15 @@ impl<'text> MagicString<'text> {
 				char_index = chunk.start();
 				let chunk_end = chunk.end();
 				for char in chunk.span.text(&self.source).chars() {
-					debug_assert!(self.source.is_char_boundary(char_index as usize));
+					debug_assert!(
+						self.source.is_char_boundary(char_index as usize)
+					);
 					if !exclude_set.contains(char_index) {
 						if char == '\n' {
 							indent_replacer.should_indent_next_char = true;
-						} else if char != '\r' && indent_replacer.should_indent_next_char {
+						} else if char != '\r'
+							&& indent_replacer.should_indent_next_char
+						{
 							indent_replacer.should_indent_next_char = false;
 							debug_assert!(!line_starts.contains(&char_index));
 							line_starts.push(char_index);
@@ -135,7 +148,10 @@ impl<'text> MagicString<'text> {
 					char_index += char.len_utf8();
 				}
 				for line_start in line_starts {
-					self.prepend_right(line_start, indent_replacer.indentor.clone());
+					self.prepend_right(
+						line_start,
+						indent_replacer.indentor.clone(),
+					);
 				}
 				char_index = chunk_end;
 			}
