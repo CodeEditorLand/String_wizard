@@ -41,28 +41,17 @@ impl<'str> Chunk<'str> {
 		self.start() < text_index && text_index < self.end()
 	}
 
-	pub fn append_outro(&mut self, content:CowStr<'str>) {
-		self.outro.push_back(content)
-	}
+	pub fn append_outro(&mut self, content:CowStr<'str>) { self.outro.push_back(content) }
 
-	pub fn append_intro(&mut self, content:CowStr<'str>) {
-		self.intro.push_back(content)
-	}
+	pub fn append_intro(&mut self, content:CowStr<'str>) { self.intro.push_back(content) }
 
-	pub fn prepend_outro(&mut self, content:CowStr<'str>) {
-		self.outro.push_front(content)
-	}
+	pub fn prepend_outro(&mut self, content:CowStr<'str>) { self.outro.push_front(content) }
 
-	pub fn prepend_intro(&mut self, content:CowStr<'str>) {
-		self.intro.push_front(content)
-	}
+	pub fn prepend_intro(&mut self, content:CowStr<'str>) { self.intro.push_front(content) }
 
 	pub fn split<'a>(&'a mut self, text_index:usize) -> Chunk<'str> {
 		if !(text_index > self.start() && text_index < self.end()) {
-			panic!(
-				"Cannot split chunk at {text_index} between {:?}",
-				self.span
-			);
+			panic!("Cannot split chunk at {text_index} between {:?}", self.span);
 		}
 		if self.edited_content.is_some() {
 			panic!("Cannot split a chunk that has already been edited")
@@ -73,13 +62,8 @@ impl<'str> Chunk<'str> {
 
 		let mut new_chunk = Chunk::new(second_half_slice);
 		if self.is_edited() {
-			new_chunk.edit(
-				"".into(),
-				EditOptions {
-					store_name:self.keep_in_mappings,
-					overwrite:false,
-				},
-			);
+			new_chunk
+				.edit("".into(), EditOptions { store_name:self.keep_in_mappings, overwrite:false });
 		}
 		std::mem::swap(&mut new_chunk.outro, &mut self.outro);
 		self.span = first_half_slice;

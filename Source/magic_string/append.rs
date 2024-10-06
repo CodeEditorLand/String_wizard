@@ -15,11 +15,7 @@ impl<'text> MagicString<'text> {
 	/// s.append_left(2, "b");
 	/// assert_eq!(s.to_string(), "01ab234")
 	/// ```
-	pub fn append_left(
-		&mut self,
-		text_index:usize,
-		content:impl Into<CowStr<'text>>,
-	) -> &mut Self {
+	pub fn append_left(&mut self, text_index:usize, content:impl Into<CowStr<'text>>) -> &mut Self {
 		match self.by_end_mut(text_index) {
 			Some(chunk) => {
 				chunk.append_outro(content.into());

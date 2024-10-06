@@ -41,9 +41,10 @@ impl<'s> Joiner<'s> {
 	// --- private
 
 	fn fragments(&'s self) -> impl Iterator<Item = &'s str> {
-		let mut iter = self.sources.iter().flat_map(|c| {
-			self.separator.as_deref().into_iter().chain(c.fragments())
-		});
+		let mut iter = self
+			.sources
+			.iter()
+			.flat_map(|c| self.separator.as_deref().into_iter().chain(c.fragments()));
 		// Drop the first separator
 		if self.separator.is_some() {
 			iter.next();

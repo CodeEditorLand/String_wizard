@@ -7,10 +7,7 @@ fn get_bunch_of_strings() -> Vec<String> {
 		.map(|p| p.unwrap().canonicalize().unwrap())
 		.collect::<Vec<_>>();
 	files.sort();
-	let stirngs = files
-		.iter()
-		.map(|p| std::fs::read_to_string(p).unwrap())
-		.collect::<Vec<_>>();
+	let stirngs = files.iter().map(|p| std::fs::read_to_string(p).unwrap()).collect::<Vec<_>>();
 
 	let mut ret = vec![];
 	for _ in 0..10 {
@@ -27,9 +24,7 @@ fn criterion_benchmark(c:&mut Criterion) {
 		joiner.append_raw(s);
 	});
 	c.bench_function("Joiner#join", |b| b.iter(|| black_box(joiner.join())));
-	c.bench_function("Vec#concat", |b| {
-		b.iter(|| black_box(bunch_of_strings.concat()))
-	});
+	c.bench_function("Vec#concat", |b| b.iter(|| black_box(bunch_of_strings.concat())));
 	c.bench_function("manual_push", |b| {
 		b.iter(|| {
 			let mut output = String::new();

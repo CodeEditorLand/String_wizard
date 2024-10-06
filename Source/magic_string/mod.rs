@@ -47,10 +47,7 @@ impl<'text> MagicString<'text> {
 		Self::with_options(source, Default::default())
 	}
 
-	pub fn with_options(
-		source:impl Into<CowStr<'text>>,
-		options:MagicStringOptions,
-	) -> Self {
+	pub fn with_options(source:impl Into<CowStr<'text>>, options:MagicStringOptions) -> Self {
 		let source:CowStr = source.into();
 
 		let source_len = source.len();
@@ -141,8 +138,7 @@ impl<'text> MagicString<'text> {
 		}
 
 		let (mut candidate, mut candidate_idx, search_right) = {
-			let last_searched_chunk =
-				&self.chunks[self.last_searched_chunk_idx];
+			let last_searched_chunk = &self.chunks[self.last_searched_chunk_idx];
 			let search_right = at_index > last_searched_chunk.end();
 
 			(last_searched_chunk, self.last_searched_chunk_idx, search_right)

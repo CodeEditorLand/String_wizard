@@ -13,16 +13,11 @@ pub struct SourceMapOptions {
 }
 
 impl Default for SourceMapOptions {
-	fn default() -> Self {
-		Self { include_content:false, source:"".into(), hires:false }
-	}
+	fn default() -> Self { Self { include_content:false, source:"".into(), hires:false } }
 }
 
 impl<'s> MagicString<'s> {
-	pub fn source_map(
-		&self,
-		opts:SourceMapOptions,
-	) -> oxc_sourcemap::SourceMap {
+	pub fn source_map(&self, opts:SourceMapOptions) -> oxc_sourcemap::SourceMap {
 		let mut source_builder = SourcemapBuilder::new(opts.hires);
 
 		source_builder.set_source_and_content(&opts.source, &self.source);

@@ -44,8 +44,7 @@ impl<'text> MagicString<'text> {
 	) -> &mut Self {
 		if panic_if_start_equal_end && start == end {
 			panic!(
-				"Cannot overwrite a zero-length range – use append_left or \
-				 prepend_right instead"
+				"Cannot overwrite a zero-length range – use append_left or prepend_right instead"
 			)
 		}
 		assert!(start < end);
@@ -59,10 +58,7 @@ impl<'text> MagicString<'text> {
 		let start_chunk = &mut self.chunks[start_idx];
 		start_chunk.edit(
 			content.into(),
-			EditOptions {
-				overwrite:opts.overwrite,
-				store_name:opts.keep_original,
-			},
+			EditOptions { overwrite:opts.overwrite, store_name:opts.keep_original },
 		);
 
 		let mut rest_chunk_idx = if start_idx != end_idx {

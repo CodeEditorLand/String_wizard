@@ -11,8 +11,7 @@ impl Locator {
 		let mut line_start_pos = 0;
 		for line in source.split('\n') {
 			line_offsets.push(line_start_pos);
-			line_start_pos +=
-				1 + line.chars().map(|c| c.len_utf16()).sum::<usize>();
+			line_start_pos += 1 + line.chars().map(|c| c.len_utf16()).sum::<usize>();
 		}
 		Self { line_offsets:line_offsets.into_boxed_slice() }
 	}
@@ -35,10 +34,7 @@ impl Locator {
 		let line = left_cursor - 1;
 
 		let column = index - self.line_offsets[line];
-		Location {
-			line:line.try_into().unwrap(),
-			column:column.try_into().unwrap(),
-		}
+		Location { line:line.try_into().unwrap(), column:column.try_into().unwrap() }
 	}
 }
 

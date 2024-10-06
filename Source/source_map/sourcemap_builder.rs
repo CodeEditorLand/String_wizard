@@ -26,17 +26,10 @@ impl SourcemapBuilder {
 	}
 
 	pub fn set_source_and_content(&mut self, id:&str, content:&str) {
-		self.source_id =
-			self.source_map_builder.set_source_and_content(id, content);
+		self.source_id = self.source_map_builder.set_source_and_content(id, content);
 	}
 
-	pub fn add_chunk(
-		&mut self,
-		chunk:&Chunk,
-		locator:&Locator,
-		source:&str,
-		name:Option<&str>,
-	) {
+	pub fn add_chunk(&mut self, chunk:&Chunk, locator:&Locator, source:&str, name:Option<&str>) {
 		let name_id = if chunk.keep_in_mappings {
 			name.map(|name| self.source_map_builder.add_name(name))
 		} else {
@@ -101,8 +94,7 @@ impl SourcemapBuilder {
 		for _ in lines {
 			self.bump_line();
 		}
-		self.generated_code_column +=
-			last_line.chars().map(|c| c.len_utf16()).sum::<usize>();
+		self.generated_code_column += last_line.chars().map(|c| c.len_utf16()).sum::<usize>();
 	}
 
 	fn bump_line(&mut self) {

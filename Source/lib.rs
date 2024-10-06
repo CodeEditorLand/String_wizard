@@ -14,10 +14,5 @@ use std::borrow::Cow;
 pub use crate::magic_string::source_map::SourceMapOptions;
 pub use crate::{
 	joiner::{Joiner, JoinerOptions},
-	magic_string::{
-		indent::IndentOptions,
-		update::UpdateOptions,
-		MagicString,
-		MagicStringOptions,
-	},
+	magic_string::{indent::IndentOptions, update::UpdateOptions, MagicString, MagicStringOptions},
 };
