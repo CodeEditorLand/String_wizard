@@ -20,11 +20,13 @@ impl<'s> Joiner<'s> {
 
 	pub fn append(&mut self, source:MagicString<'s>) -> &mut Self {
 		self.sources.push(source);
+
 		self
 	}
 
 	pub fn append_raw(&mut self, raw:impl Into<CowStr<'s>>) -> &mut Self {
 		self.sources.push(MagicString::new(raw));
+
 		self
 	}
 
@@ -32,9 +34,11 @@ impl<'s> Joiner<'s> {
 
 	pub fn join(&self) -> String {
 		let mut ret = String::with_capacity(self.len());
+
 		self.fragments().for_each(|frag| {
 			ret.push_str(frag);
 		});
+
 		ret
 	}
 
@@ -49,6 +53,7 @@ impl<'s> Joiner<'s> {
 		if self.separator.is_some() {
 			iter.next();
 		}
+
 		iter
 	}
 }
