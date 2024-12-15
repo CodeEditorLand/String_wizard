@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use crate::{
-	source_map::{locator::Locator, sourcemap_builder::SourcemapBuilder},
 	MagicString,
+	source_map::{locator::Locator, sourcemap_builder::SourcemapBuilder},
 };
 
 #[derive(Debug)]

@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::{span::Span, CowStr};
+use crate::{CowStr, span::Span};
 
 index_vec::define_index_type! {
 	pub struct ChunkIdx = u32;

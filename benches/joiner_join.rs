@@ -1,4 +1,4 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, black_box, criterion_group, criterion_main};
 
 fn get_bunch_of_strings() -> Vec<String> {
 	let files = glob::glob("fixtures/threejs_src/**/*.js").unwrap();
